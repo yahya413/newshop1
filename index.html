@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Shop</title>
+    <title>New Shop - App</title>
     <style>
         /* الألوان الأساسية */
         :root {
             --light-red: #ff4d4d;
             --orange: #ff944d;
+            --bg-color: #f8f9fa;
+            --text-dark: #333;
+            --text-light: #777;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
-            font-family: sans-serif;
-            overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* شاشة الترحيب */
@@ -30,11 +34,9 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            /* تختفي بعد 3 ثوانٍ */
             animation: fadeOut 0.5s forwards 3s;
         }
 
-        /* اللوجو النابض */
         .logo {
             width: 100px;
             height: 100px;
@@ -51,7 +53,6 @@
             margin: 0;
         }
 
-        /* حركات الأنيميشن */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -59,32 +60,145 @@
         }
 
         @keyframes fadeOut {
-            to { opacity: 0; visibility: hidden; }
+            to { opacity: 0; visibility: hidden; z-index: -1; }
         }
 
-        /* واجهة المتجر الرئيسية */
-        .main-page {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+        /* واجهة التطبيق الرئيسية (تظهر بعد الترحيب) */
+        #app-container {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards 3.2s;
+            padding-bottom: 70px; /* مساحة للشريط السفلي */
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* الهيدر العلوي */
+        header {
+            background: linear-gradient(to right, var(--light-red), var(--orange));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* الصفحات المتغيرة */
+        .page {
+            display: none; /* مخفية افتراضياً */
+            padding: 20px;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block; /* تظهر فقط الصفحة النشطة */
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تصميم الصفحة الرئيسية (احترافي) */
+        .home-banner {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             text-align: center;
         }
 
-        header {
-            padding: 20px;
-            background: linear-gradient(to right, var(--light-red), var(--orange));
-            color: white;
+        .home-banner h3 {
+            color: var(--text-dark);
+            margin-top: 0;
         }
 
-        .nav-bottom {
+        .home-banner p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 20px 10px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: var(--text-dark);
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .service-card:hover {
+            border-color: var(--orange);
+            color: var(--light-red);
+        }
+
+        .service-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* الشريط السفلي للتنقل (Bottom Nav) */
+        .bottom-nav {
             position: fixed;
-            bottom: 0; width: 100%;
-            height: 60px;
-            background: #f1f1f1;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background: white;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border-top: 1px solid #ddd;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 25%;
+        }
+
+        .nav-item .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--light-red);
+            font-weight: bold;
+        }
+
+        .nav-item.active .icon {
+            transform: translateY(-3px);
         }
     </style>
 </head>
@@ -95,20 +209,96 @@
         <h1 class="brand-name">New Shop</h1>
     </div>
 
-    <div class="main-page">
+    <div id="app-container">
+        
         <header>
             <h2>New Shop</h2>
         </header>
-        <div style="margin-top: 50px;">
-            <h3>مرحباً بك في المتجر</h3>
-            <p>انتظر العروض القوية قريباً!</p>
+
+        <div id="page-home" class="page active">
+            <div class="home-banner">
+                <h3>مرحباً بك في عالم التسوق</h3>
+                <p>اكتشف أفضل المتاجر، العروض الحصرية، وخدمة توصيل سريعة في مكان واحد.</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card" onclick="switchPage('page-stores', this)">
+                    <span class="service-icon">🏪</span>
+                    تصفح المتاجر
+                </div>
+                <div class="service-card" onclick="switchPage('page-delivery', this)">
+                    <span class="service-icon">🛵</span>
+                    خدمة الدليفري
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">🔥</span>
+                    عروض اليوم
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">➕</span>
+                    إضافة منتج (للتاجر)
+                </div>
+            </div>
         </div>
-        <div class="nav-bottom">
-            <span>🏠 الرئيسية</span>
-            <span>🔍 بحث</span>
-            <span>👤 حسابي</span>
+
+        <div id="page-stores" class="page">
+            <h3 style="text-align: center; color: var(--text-light); margin-top: 50px;">سيتم إضافة قسم المتاجر والعروض هنا...</h3>
         </div>
+
+        <div id="page-delivery" class="page">
+            <h3 style="text-align: center; color: var(--text-light); margin-top: 50px;">سيتم إضافة قسم تقييمات الدليفري هنا...</h3>
+        </div>
+
+        <div id="page-profile" class="page">
+            <h3 style="text-align: center; color: var(--text-light); margin-top: 50px;">سيتم إضافة قسم الملف الشخصي وتحديد النوع والصلاحيات هنا...</h3>
+        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage('page-home', this)">
+                <span class="icon">🏠</span>
+                <span>الرئيسية</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page-stores', this)">
+                <span class="icon">🏪</span>
+                <span>المتاجر</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page-delivery', this)">
+                <span class="icon">🛵</span>
+                <span>الدليفري</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page-profile', this)">
+                <span class="icon">👤</span>
+                <span>حسابي</span>
+            </div>
+        </nav>
+
     </div>
 
+    <script>
+        function switchPage(pageId, navElement) {
+            // 1. إخفاء كل الصفحات
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // 2. إزالة التفعيل من كل الأيقونات في الشريط السفلي
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            // 3. إظهار الصفحة المطلوبة
+            document.getElementById(pageId).classList.add('active');
+
+            // 4. تفعيل الأيقونة التي تم الضغط عليها (إذا تم الضغط من الشريط السفلي)
+            if(navElement && navElement.classList.contains('nav-item')) {
+                navElement.classList.add('active');
+            } else {
+                // إذا تم الضغط من البطاقات داخل الرئيسية، نفعل أيقونة القسم المناسب في الشريط
+                if(pageId === 'page-stores') navItems[1].classList.add('active');
+                if(pageId === 'page-delivery') navItems[2].classList.add('active');
+            }
+            
+            // التمرير لأعلى الصفحة عند التبديل
+            window.scrollTo(0, 0);
+        }
+    </script>
 </body>
 </html>
