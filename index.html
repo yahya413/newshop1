@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Shop - Professional</title>
+    <title>New Shop Pro - 2026</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         :root {
-            --primary: #4a90e2; /* أزرق مريح للعين */
-            --bg: #f8f9fa;
-            --text: #2d3436;
-            --3d-shadow: 8px 8px 15px #d1d9e6, -8px -8px 15px #ffffff;
-            --inner-shadow: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff;
+            --primary: #4f46e5; /* بنفسجي احترافي مريح */
+            --bg: #f9fafb;
+            --white: #ffffff;
+            --text: #111827;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --inner: inset 2px 2px 5px rgba(0,0,0,0.05);
         }
 
         body {
@@ -18,188 +21,232 @@
             color: var(--text); transition: 0.3s;
         }
 
-        /* شريط العروض العلوي */
-        .offer-ticker {
-            background: #fff; border-bottom: 2px solid var(--primary);
-            padding: 10px; font-weight: bold; overflow: hidden; white-space: nowrap;
-        }
-        .ticker-move { display: inline-block; animation: ticker 20s linear infinite; }
-        @keyframes ticker { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        /* الهيدر العلوي */
-        .top-nav {
-            display: flex; justify-content: space-between; padding: 15px;
-            align-items: center; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        /* 1. الهيدر الثابت واحترافي */
+        .header {
+            background: var(--white); padding: 12px 20px; display: flex;
+            justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 1100;
         }
 
-        /* القائمة الجانبية للتجار */
+        .nav-icons { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { background: #f3f4f6; border: none; padding: 10px; border-radius: 12px; cursor: pointer; font-size: 18px; }
+
+        /* 2. شريط العروض (يظهر فقط عند وجود بيانات) */
+        .ticker {
+            background: #fff; border-bottom: 1px solid #e5e7eb; overflow: hidden;
+            white-space: nowrap; color: var(--primary); font-weight: 700; height: 40px; line-height: 40px;
+        }
+        .ticker-text { display: inline-block; animation: scroll 30s linear infinite; }
+        @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+        /* 3. القائمة الجانبية (Sidebar) مع إصلاح الاختفاء */
         .sidebar {
-            position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
-            background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-            transition: 0.3s; z-index: 2000; padding: 20px;
+            position: fixed; top: 0; right: -100%; width: 300px; height: 100%;
+            background: var(--white); box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            transition: 0.4s ease; z-index: 2000; padding: 40px 25px;
         }
         .sidebar.open { right: 0; }
+        [dir="ltr"] .sidebar { right: auto; left: -100%; }
+        [dir="ltr"] .sidebar.open { left: 0; }
 
-        /* الأزرار الـ 3D المريحة */
-        .card-3d {
-            background: var(--bg); border-radius: 20px; padding: 20px;
-            text-align: center; box-shadow: var(--3d-shadow);
-            cursor: pointer; transition: 0.2s; border: none; margin: 10px;
+        /* 4. التصميم الـ 3D للأيقونات - مريح ومنظم */
+        .grid-home {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px;
+            max-width: 900px; margin: auto;
         }
-        .card-3d:active { box-shadow: var(--inner-shadow); transform: scale(0.98); }
+        .card-pro {
+            background: var(--white); border-radius: 24px; padding: 30px 10px;
+            text-align: center; cursor: pointer; transition: 0.2s;
+            box-shadow: var(--shadow); border: 1px solid #f3f4f6;
+        }
+        .card-pro:active { transform: scale(0.96); box-shadow: var(--inner); }
+        .card-pro span { font-size: 40px; display: block; margin-bottom: 12px; }
 
-        /* الصفحات */
-        .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
+        /* 5. واجهات الإدخال الاحترافية */
+        .page { display: none; padding: 25px; animation: fadeIn 0.4s; max-width: 600px; margin: auto; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* تصميم الفورم المريح */
-        input, select {
-            width: 100%; padding: 12px; margin: 10px 0; border: none;
-            border-radius: 10px; background: var(--bg); box-shadow: var(--inner-shadow);
-            box-sizing: border-box; outline: none;
-        }
-        .btn-main {
-            background: var(--primary); color: white; border: none; padding: 12px 25px;
-            border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%;
+        .auth-card {
+            background: white; padding: 30px; border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 20px;
         }
 
-        .back-btn { background: #ddd; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+        input, select {
+            width: 100%; padding: 15px; margin: 10px 0; border: 1.5px solid #eee;
+            border-radius: 14px; font-size: 16px; outline: none; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--primary); }
+
+        .btn-action {
+            background: var(--primary); color: white; border: none; padding: 16px;
+            border-radius: 14px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="sidebar" class="sidebar">
-        <h3>بوابة التجار</h3>
-        <p>سجل محلك الآن وابدأ البيع</p>
-        <button class="btn-main" onclick="showPage('merchantReg')">تسجيل محل جديد</button>
-        <br><br>
-        <button class="btn-main" style="background:#636e72" onclick="toggleSidebar()">إغلاق</button>
+    <div class="header">
+        <div class="nav-icons">
+            <button class="icon-btn" onclick="toggleSide()">☰</button>
+            <button class="icon-btn" id="homeBtn" style="display:none" onclick="goHome()">🏠</button>
+        </div>
+        <h2 style="margin:0; font-size:20px; color:var(--primary)">New Shop</h2>
+        <button class="icon-btn" onclick="toggleLanguage()">EN/AR</button>
     </div>
 
-    <div class="top-nav">
-        <button onclick="toggleSidebar()">☰ بوابة التاجر</button>
-        <h2 style="margin:0; color:var(--primary)">New Shop</h2>
-        <button onclick="toggleLang()">EN / عربي</button>
+    <div class="ticker" id="offerTicker" style="display:none">
+        <div class="ticker-text" id="tickerMsg"></div>
     </div>
 
-    <div class="offer-ticker" id="tickerSection" style="display: none;">
-        <div class="ticker-move" id="tickerText"></div>
+    <div class="sidebar" id="sidebar">
+        <h3 id="t-side">بوابة التاجر</h3>
+        <p id="t-side-p">هل تمتلك محلاً؟ سجل الآن مجاناً</p>
+        <button class="btn-action" onclick="showPage('merchantReg')">تسجيل متجر جديد</button>
+        <button class="icon-btn" style="width:100%; margin-top:15px" onclick="toggleSide()">إغلاق</button>
     </div>
 
     <div id="home" class="page active">
-        <div style="display: grid; grid-template-columns: 1fr 1fr;">
-            <div class="card-3d" onclick="showPage('stores')">
-                <span style="font-size:40px">🏪</span><br><b>المتاجر</b>
+        <div class="grid-home">
+            <div class="card-pro" onclick="showPage('stores')">
+                <span>🏪</span> <b id="t-stores">المتاجر</b>
             </div>
-            <div class="card-3d" onclick="showPage('delivery')">
-                <span style="font-size:40px">🛵</span><br><b>الدليفري</b>
+            <div class="card-pro" onclick="showPage('delivery')">
+                <span>🛵</span> <b id="t-delivery">الدليفري</b>
             </div>
-            <div class="card-3d" onclick="showPage('profile')">
-                <span style="font-size:40px">👤</span><br><b>حسابي</b>
-            </div>
-            <div class="card-3d" onclick="alert('قريباً...')">
-                <span style="font-size:40px">🎁</span><br><b>عروض حصرية</b>
+            <div class="card-pro" onclick="showPage('account')">
+                <span>👤</span> <b id="t-account">حسابي</b>
             </div>
         </div>
     </div>
 
     <div id="stores" class="page">
-        <button class="back-btn" onclick="showPage('home')">⬅ رجوع</button>
-        <h3>تصفح المتاجر</h3>
-        <input type="text" id="storeSearch" placeholder="ابحث عن (حلاق، مطعم، سوبر ماركت...)" onkeyup="filterStores()">
-        <div id="storesList">
-            <div class="card-3d" onclick="tryBuy('سوبر ماركت الأمانة')">سوبر ماركت الأمانة</div>
-            <div class="card-3d" onclick="tryBuy('حلاق الشياكة')">حلاق الشياكة</div>
-            <div class="card-3d" onclick="tryBuy('سايبر نت')">سايبر نت</div>
-            <div class="card-3d" onclick="tryBuy('مطعم الهناء')">مطعم الهناء</div>
-            <div class="card-3d" onclick="tryBuy('مول العرب')">مول العرب</div>
-        </div>
-    </div>
-
-    <div id="customerLogin" class="page">
-        <button class="back-btn" onclick="showPage('stores')">⬅ رجوع</button>
-        <h3>إكمال بيانات الشراء</h3>
-        <p id="targetStore"></p>
-        <div class="form-3d" style="background:white; padding:20px; border-radius:20px;">
-            <input type="email" placeholder="البريد الإلكتروني">
-            <input type="text" placeholder="الموقع الجغرافي (GPS)">
-            <select>
-                <option>وسيلة الدفع</option>
-                <option>كاش عند الاستلام</option>
-                <option>محفظة إلكترونية</option>
-                <option>فيزا</option>
-            </select>
-            <button class="btn-main" onclick="alert('تم حفظ بياناتك وتأكيد الطلب!'); showPage('home')">تأكيد الشراء</button>
-        </div>
+        <h3 id="t-st-title">المتاجر المسجلة</h3>
+        <input type="text" id="search" placeholder="بحث عن محل..." onkeyup="filter()">
+        <div id="storesList"></div>
     </div>
 
     <div id="merchantReg" class="page">
-        <button class="back-btn" onclick="toggleSidebar(); showPage('home')">⬅ رجوع</button>
-        <h3>تسجيل محل جديد</h3>
-        <input type="text" placeholder="اسم المحل">
-        <select>
-            <option>نوع المحل</option>
-            <option>سوبر ماركت</option>
-            <option>صيدلية</option>
-            <option>حلاق</option>
-            <option>سايبر</option>
-            <option>مطعم</option>
-            <option>مول</option>
-        </select>
-        <input type="text" placeholder="إثبات الهوية">
-        <button class="btn-main" onclick="addOffer()">تسجيل وإضافة عرض تجريبي</button>
+        <div class="auth-card">
+            <h2 id="t-reg-title">إضافة متجرك</h2>
+            <input type="text" id="mName" placeholder="اسم المحل (مثل: المتميز)">
+            <select id="mType">
+                <option value="سوبر ماركت">سوبر ماركت</option>
+                <option value="مطعم">مطعم</option>
+                <option value="حلاق">حلاق</option>
+                <option value="سايبر">سايبر</option>
+            </select>
+            <input type="text" id="mOffer" placeholder="عرض اليوم (مثال: خصم 20% على المكرونة)">
+            <button class="btn-action" onclick="saveToFirebase()">حفظ المتجر والعرض</button>
+        </div>
+    </div>
+
+    <div id="login" class="page">
+        <div class="auth-card">
+            <h2 id="t-login">بيانات الشحن</h2>
+            <input type="email" id="uEmail" placeholder="البريد الإلكتروني">
+            <input type="text" id="uLoc" placeholder="الموقع الجغرافي (العنوان)">
+            <select>
+                <option>طريقة الدفع</option>
+                <option>كاش عند الاستلام</option>
+            </select>
+            <button class="btn-action" onclick="alert('تم الطلب بنجاح!'); goHome()">تأكيد الشراء</button>
+        </div>
     </div>
 
     <script>
-        // تبديل الصفحات
+        // 1. إعدادات Firebase من صورتك
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmWe2JfT0XVYdWQFjPVnucz9sRT53CE7Y",
+            authDomain: "sook-mall3.firebaseapp.com",
+            databaseURL: "https://sook-mall3-default-rtdb.firebaseio.com",
+            projectId: "sook-mall3",
+            storageBucket: "sook-mall3.firebasestorage.app",
+            messagingSenderId: "270335602475",
+            appId: "1:270335602475:web:538a53ad1533b7bf109f6e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 2. نظام اللغات (ترجمة نصوص حقيقية)
+        let lang = 'ar';
+        const dict = {
+            ar: {
+                stores: 'المتاجر', delivery: 'الدليفري', account: 'حسابي',
+                side: 'بوابة التاجر', sideP: 'سجل محلك الآن', stTitle: 'المتاجر المتاحة',
+                regTitle: 'تسجيل متجر جديد', login: 'بيانات المشتري'
+            },
+            en: {
+                stores: 'Stores', delivery: 'Delivery', account: 'Account',
+                side: 'Merchant Portal', sideP: 'Register your store', stTitle: 'Available Stores',
+                regTitle: 'New Store Registration', login: 'Buyer Information'
+            }
+        };
+
+        function toggleLanguage() {
+            lang = lang === 'ar' ? 'en' : 'ar';
+            document.getElementById('mainHtml').dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('t-stores').innerText = dict[lang].stores;
+            document.getElementById('t-delivery').innerText = dict[lang].delivery;
+            document.getElementById('t-account').innerText = dict[lang].account;
+            document.getElementById('t-side').innerText = dict[lang].side;
+            document.getElementById('t-st-title').innerText = dict[lang].stTitle;
+            document.getElementById('t-reg-title').innerText = dict[lang].regTitle;
+        }
+
+        // 3. التنقل والظهور
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(id !== 'merchantReg') document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('homeBtn').style.display = id === 'home' ? 'none' : 'block';
+            toggleSide(false);
+            if(id === 'stores') loadFromFirebase();
         }
 
-        // القائمة الجانبية
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+        function goHome() { showPage('home'); }
+
+        function toggleSide(forceClose = null) {
+            const side = document.getElementById('sidebar');
+            if(forceClose === false) side.classList.remove('open');
+            else side.classList.toggle('open');
         }
 
-        // اللغة
-        function toggleLang() {
-            let html = document.getElementById('mainHtml');
-            if(html.dir === 'rtl') {
-                html.dir = 'ltr'; html.lang = 'en';
-            } else {
-                html.dir = 'rtl'; html.lang = 'ar';
-            }
+        // 4. العمليات الحقيقية مع Firebase
+        function saveToFirebase() {
+            const name = document.getElementById('mName').value;
+            const type = document.getElementById('mType').value;
+            const offer = document.getElementById('mOffer').value;
+
+            if(!name) return alert("من فضلك أدخل اسم المحل");
+            
+            db.ref('merchants').push({ name, type, offer });
+            alert("تم حفظ المتجر بنجاح في قاعدة البيانات!");
+            goHome();
         }
 
-        // محاولة الشراء
-        function tryBuy(storeName) {
-            document.getElementById('targetStore').innerText = "أنت الآن تشتري من: " + storeName;
-            showPage('customerLogin');
-        }
+        function loadFromFirebase() {
+            const list = document.getElementById('storesList');
+            const ticker = document.getElementById('offerTicker');
+            const msg = document.getElementById('tickerMsg');
+            
+            list.innerHTML = "جاري جلب المحلات...";
+            msg.innerHTML = "";
 
-        // محرك البحث
-        function filterStores() {
-            let input = document.getElementById('storeSearch').value.toLowerCase();
-            let cards = document.getElementById('storesList').getElementsByClassName('card-3d');
-            for (let i = 0; i < cards.length; i++) {
-                if (cards[i].innerText.toLowerCase().includes(input)) {
-                    cards[i].style.display = "";
-                } else {
-                    cards[i].style.display = "none";
-                }
-            }
-        }
-
-        // إضافة عرض (تخيل أن التاجر أضاف عرضاً)
-        function addOffer() {
-            let store = "محل تجريبي";
-            document.getElementById('tickerSection').style.display = "block";
-            document.getElementById('tickerText').innerText = "🔥 عرض جديد من " + store + ": خصم 20% على كل شيء!";
-            alert("تم تسجيل المحل وظهر عرضك في الشريط العلوي!");
-            showPage('home');
+            db.ref('merchants').on('value', (snap) => {
+                list.innerHTML = "";
+                snap.forEach(child => {
+                    const data = child.val();
+                    list.innerHTML += `
+                        <div class="card-pro" style="margin-bottom:15px" onclick="showPage('login')">
+                            <b>${data.name}</b> <br> <small>${data.type}</small>
+                        </div>
+                    `;
+                    if(data.offer) {
+                        ticker.style.display = "block";
+                        msg.innerHTML += ` 🔥 ${data.name}: ${data.offer} | `;
+                    }
+                });
+            });
         }
     </script>
 </body>
