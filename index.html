@@ -3,124 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Shop Pro</title>
+    <title>Sook Mall Pro</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        :root {
-            --primary: #5c67f2;
-            --bg: #f0f2f5;
-            --card: #ffffff;
-            --text: #333;
-        }
-        body { margin: 0; background: var(--bg); font-family: 'Segoe UI', Tahoma, sans-serif; overflow-x: hidden; }
+        :root { --p: #6366f1; --bg: #f8fafc; --txt: #1e293b; --card: #ffffff; }
+        body { margin: 0; background: var(--bg); font-family: 'Segoe UI', sans-serif; color: var(--txt); }
+        .header { background: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top:0; z-index: 1000; }
+        .btn { padding: 10px 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-p { background: var(--p); color: white; width: 100%; }
+        .back-btn { background: #f1f5f9; color: var(--txt); }
         
-        /* الهيدر وزر الرجوع */
-        .app-bar {
-            background: white; padding: 15px; display: flex; justify-content: space-between;
-            align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top:0; z-index: 1000;
-        }
-        .back-btn { background: #eee; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; display: none; }
-
-        /* القائمة الجانبية المخفية تماماً */
-        .side-menu {
-            position: fixed; top: 0; right: -100%; width: 260px; height: 100%;
-            background: white; z-index: 2000; transition: 0.4s; padding: 30px 20px;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-        }
-        .side-menu.open { right: 0; }
-        [dir="ltr"] .side-menu { right: auto; left: -100%; }
-        [dir="ltr"] .side-menu.open { left: 0; }
-
-        /* واجهة الدخول الاحترافية */
-        .login-container {
-            background: white; padding: 30px; border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px;
-            margin: 50px auto; text-align: center;
-        }
-
-        /* الأيقونات الـ 3D */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
-        .card-3d {
-            background: white; border-radius: 20px; padding: 25px; text-align: center;
-            box-shadow: 5px 5px 15px #d1d9e6, -5px -5px 15px #ffffff; cursor: pointer;
-        }
-        .card-3d:active { box-shadow: inset 3px 3px 10px #d1d9e6; }
-
-        /* الصفحات */
-        .page { display: none; animation: fadeIn 0.3s; }
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s; max-width: 600px; margin: auto; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        input, select, .main-btn {
-            width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px;
-            border: 1px solid #ddd; box-sizing: border-box; outline: none;
-        }
-        .main-btn { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
+        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #f1f5f9; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #e2e8f0; outline: none; box-sizing: border-box; }
+        
+        /* Sidebar */
+        .side { position: fixed; top: 0; right: -100%; width: 280px; height: 100%; background: white; z-index: 2000; transition: 0.4s; padding: 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        .side.open { right: 0; }
+
+        .rating { color: #f59e0b; margin: 5px 0; }
+        .comment-box { background: #f8fafc; padding: 10px; border-radius: 10px; margin-top: 5px; font-size: 0.9em; }
     </style>
 </head>
 <body>
 
-    <div class="app-bar">
-        <button onclick="openMenu()">☰</button>
-        <button class="back-btn" id="backBtn" onclick="goHome()">🏠 الرئيسية</button>
-        <h3 id="logo">New Shop</h3>
-        <button onclick="toggleLang()">EN/AR</button>
+    <div class="side" id="side">
+        <h3>بوابة التاجر</h3>
+        <button class="btn btn-p" onclick="show('regPage')">تسجيل متجر</button>
+        <button class="btn btn-p" style="margin-top:10px; background:#475569" onclick="show('addProductPage')">إضافة منتجات</button>
+        <button class="btn" style="width:100%; margin-top:20px" onclick="toggleS()">إغلاق</button>
     </div>
 
-    <div class="side-menu" id="sideMenu">
-        <h3 id="t-side-head">لوحة التاجر</h3>
-        <button class="main-btn" onclick="showPage('merchantPage')">تسجيل محل جديد</button>
-        <button class="main-btn" style="background:#888" onclick="closeMenu()">إغلاق</button>
+    <div class="header">
+        <button class="btn back-btn" onclick="toggleS()">☰</button>
+        <button class="btn back-btn" id="bHome" style="display:none" onclick="show('home')">🏠</button>
+        <h3 style="margin:0; color:var(--p)">Sook Mall</h3>
+        <button class="btn back-btn" onclick="toggleL()">EN/AR</button>
     </div>
 
-    <div id="homePage" class="page active">
+    <div id="home" class="page active">
         <div class="grid">
-            <div class="card-3d" onclick="showPage('storesPage')">
-                <span style="font-size:40px">🏪</span><br><b id="t-btn-stores">المتاجر</b>
-            </div>
-            <div class="card-3d" onclick="showPage('deliveryPage')">
-                <span style="font-size:40px">🛵</span><br><b id="t-btn-deliv">الدليفري</b>
-            </div>
+            <div class="card" style="text-align:center" onclick="show('stores')"><span>🏪</span><br><b class="ln" data-ar="المتاجر" data-en="Stores">المتاجر</b></div>
+            <div class="card" style="text-align:center" onclick="show('deliv')"><span>🛵</span><br><b class="ln" data-ar="الدليفري" data-en="Delivery">الدليفري</b></div>
         </div>
     </div>
 
-    <div id="storesPage" class="page">
-        <div style="padding:20px">
-            <h2 id="t-st-head">المتاجر المتوفرة</h2>
-            <input type="text" id="searchInput" placeholder="ابحث عن سوبر ماركت، حلاق..." onkeyup="search()">
-            <div id="realStoresContainer"></div>
+    <div id="stores" class="page">
+        <h2 class="ln" data-ar="قائمة المتاجر" data-en="Stores List">قائمة المتاجر</h2>
+        <div id="storesCont"></div>
+    </div>
+
+    <div id="addProductPage" class="page">
+        <div class="card">
+            <h3>إضافة منتج جديد</h3>
+            <input type="text" id="pStore" placeholder="اسم متجرك المسجل">
+            <input type="text" id="pName" placeholder="اسم المنتج">
+            <input type="number" id="pPrice" placeholder="السعر">
+            <button class="btn btn-p" onclick="addP()">نشر المنتج</button>
         </div>
     </div>
 
-    <div id="loginPage" class="page">
-        <div class="login-container">
-            <h2 id="t-log-head">إكمال البيانات للشراء</h2>
-            <input type="email" id="uEmail" placeholder="الإيميل">
-            <input type="text" id="uAddress" placeholder="العنوان بالتفصيل">
-            <select>
-                <option id="t-pay-method">وسيلة الدفع</option>
-                <option>Cash</option>
+    <div id="deliv" class="page">
+        <div class="card" style="text-align:center">
+            <h3>قسم الدليفري</h3>
+            <p>قريباً.. تتبع طلباتك هنا</p>
+            <button class="btn btn-p" onclick="show('home')">الرجوع للرئيسية</button>
+        </div>
+    </div>
+
+    <div id="buyPage" class="page">
+        <div class="card">
+            <h3>إكمال عملية الشراء</h3>
+            <input type="text" placeholder="العنوان بالتفصيل">
+            <select id="payM">
+                <option>اختر وسيلة الدفع</option>
+                <option>كاش عند الاستلام</option>
+                <option>فودافون كاش</option>
+                <option>بطاقة بنكية (Visa/Master)</option>
             </select>
-            <button class="main-btn" onclick="alert('تم الطلب!'); goHome()">تأكيد</button>
-        </div>
-    </div>
-
-    <div id="merchantPage" class="page">
-        <div class="login-container">
-            <h2 id="t-reg-head">بيانات المتجر</h2>
-            <input type="text" id="mName" placeholder="اسم المحل">
-            <select id="mType">
-                <option value="سوبر ماركت">سوبر ماركت</option>
-                <option value="حلاق">حلاق</option>
-                <option value="مطعم">مطعم</option>
-            </select>
-            <button class="main-btn" onclick="saveStore()">حفظ والبدء في البيع</button>
+            <button class="btn btn-p" onclick="alert('تم الطلب!'); show('home')">تأكيد</button>
         </div>
     </div>
 
     <script>
-        // الربط بالفايربيس (sook-mall3) كما في صورتك
         const firebaseConfig = {
             apiKey: "AIzaSyBmWe2JfT0XVYdWQFjPVnucz9sRT53CE7Y",
             authDomain: "sook-mall3.firebaseapp.com",
@@ -133,64 +103,64 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // نظام اللغات
-        let currentLang = 'ar';
-        function toggleLang() {
-            currentLang = (currentLang === 'ar') ? 'en' : 'ar';
-            document.getElementById('mainHtml').dir = (currentLang === 'ar') ? 'rtl' : 'ltr';
-            
-            const texts = {
-                ar: { stores: "المتاجر", deliv: "الدليفري", side: "لوحة التاجر", stH: "المتاجر المتوفرة", logH: "إكمال الشراء", regH: "بيانات المتجر" },
-                en: { stores: "Stores", deliv: "Delivery", side: "Merchant Portal", stH: "Available Stores", logH: "Complete Purchase", regH: "Store Info" }
-            };
-
-            document.getElementById('t-btn-stores').innerText = texts[currentLang].stores;
-            document.getElementById('t-btn-deliv').innerText = texts[currentLang].deliv;
-            document.getElementById('t-side-head').innerText = texts[currentLang].side;
-            document.getElementById('t-st-head').innerText = texts[currentLang].stH;
-            document.getElementById('t-log-head').innerText = texts[currentLang].logH;
-            document.getElementById('t-reg-head').innerText = texts[currentLang].regH;
-        }
-
-        // التنقل والتحكم
-        function showPage(id) {
+        function show(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.getElementById('backBtn').style.display = (id === 'homePage') ? 'none' : 'block';
-            closeMenu();
-            if(id === 'storesPage') loadStores();
+            document.getElementById('bHome').style.display = id === 'home' ? 'none' : 'block';
+            toggleS(false);
+            if(id === 'stores') loadS();
         }
 
-        function goHome() { showPage('homePage'); }
-        function openMenu() { document.getElementById('sideMenu').classList.add('open'); }
-        function closeMenu() { document.getElementById('sideMenu').classList.remove('open'); }
+        function toggleS(f) { const s = document.getElementById('side'); if(f === false) s.classList.remove('open'); else s.classList.toggle('open'); }
 
-        // وظائف الفايربيس الفعلية
-        function saveStore() {
-            const name = document.getElementById('mName').value;
-            const type = document.getElementById('mType').value;
-            if(name) {
-                db.ref('new_stores').push({ name, type });
-                alert("تم الحفظ بنجاح!");
-                goHome();
+        function addP() {
+            const s = document.getElementById('pStore').value;
+            const n = document.getElementById('pName').value;
+            const p = document.getElementById('pPrice').value;
+            if(s && n) {
+                db.ref('products').push({ store: s, name: n, price: p });
+                alert('تم إضافة المنتج!'); show('home');
             }
         }
 
-        function loadStores() {
-            const container = document.getElementById('realStoresContainer');
-            container.innerHTML = "جاري التحميل من قاعدة البيانات...";
-            db.ref('new_stores').on('value', (snapshot) => {
-                container.innerHTML = "";
-                snapshot.forEach(child => {
-                    const data = child.val();
-                    container.innerHTML += `
-                        <div class="card-3d" onclick="showPage('loginPage')" style="margin-bottom:10px">
-                            <b>${data.name}</b> <br> <small>${data.type}</small>
+        function loadS() {
+            const cont = document.getElementById('storesCont');
+            cont.innerHTML = "جاري التحميل...";
+            db.ref('new_stores').on('value', (snap) => {
+                cont.innerHTML = "";
+                snap.forEach(child => {
+                    const s = child.val();
+                    cont.innerHTML += `
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between">
+                                <b>${s.name}</b>
+                                <div class="rating">⭐ 4.5</div>
+                            </div>
+                            <p style="font-size:0.8em; color:gray">${s.type}</p>
+                            <div id="prod-${child.key}" style="border-top:1px solid #eee; padding-top:10px"></div>
+                            <button class="btn btn-p" style="margin-top:10px" onclick="show('buyPage')">شراء الآن</button>
+                            <div style="margin-top:10px">
+                                <input type="text" placeholder="أضف تعليق..." onkeydown="if(event.key==='Enter') addC('${child.key}', this.value)">
+                            </div>
                         </div>
                     `;
+                    loadP(s.name, child.key);
                 });
             });
         }
+
+        function loadP(sName, key) {
+            db.ref('products').orderByChild('store').equalTo(sName).on('value', (snap) => {
+                const pCont = document.getElementById('prod-' + key);
+                pCont.innerHTML = "";
+                snap.forEach(p => {
+                    const item = p.val();
+                    pCont.innerHTML += `<div style="font-size:0.9em">🔹 ${item.name} - ${item.price} ج.م</div>`;
+                });
+            });
+        }
+
+        function addC(key, val) { alert('شكراً لتقييمك!'); }
     </script>
 </body>
 </html>
