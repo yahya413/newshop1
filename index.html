@@ -3,201 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Shop Pro - 3D Experience</title>
+    <title>New Shop - Pro 3D</title>
     <style>
         :root {
+            --bg: #e0e5ec;
             --primary: #ff4b2b;
-            --secondary: #ff416c;
-            --bg-color: #e0e5ec; /* لون خلفية مناسب للـ 3D */
-            /* ظلال الـ 3D العميقة */
-            --outer-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+            --shadow-light: 9px 9px 16px rgb(163,177,198,0.6);
+            --shadow-white: -9px -9px 16px rgba(255,255,255, 0.5);
             --inner-shadow: inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px rgba(255,255,255, 0.5);
         }
 
         body {
-            margin: 0;
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            overflow-x: hidden;
+            margin: 0; background-color: var(--bg);
+            font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
         }
 
-        /* 1. شريط العروض المتحرك (فوق في الشاشة) */
-        .ticker-wrapper {
-            background: white;
-            color: var(--primary);
-            padding: 10px 0;
-            font-weight: bold;
+        /* 1. شريط العروض (التيكر) */
+        .ticker-bar {
+            background: #fff; color: var(--primary);
+            padding: 12px 0; font-weight: bold;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-            white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: sticky; top: 0; z-index: 1000;
+            overflow: hidden; white-space: nowrap;
         }
-
-        .ticker-text {
-            display: inline-block;
-            animation: ticker 15s linear infinite;
+        .ticker-content {
+            display: inline-block; animation: scroll 15s linear infinite;
             padding-left: 100%;
         }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(100%); } }
 
-        @keyframes ticker {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(100%, 0); }
+        /* 2. الأيقونات الـ 3D */
+        .grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 25px; padding: 25px;
         }
-
-        /* 2. الهيدر والترحيب */
-        header {
-            text-align: center;
-            padding: 20px;
-            color: #444;
+        .card-3d {
+            background: var(--bg); border-radius: 30px;
+            padding: 30px 15px; text-align: center;
+            box-shadow: var(--shadow-light), var(--shadow-white);
+            cursor: pointer; transition: 0.2s; border: none;
         }
-
-        /* 3. تصميم الأيقونات 3D (Neumorphism Style) */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            padding: 25px;
-        }
-
-        .icon-card-3d {
-            background: var(--bg-color);
-            border-radius: 30px;
-            padding: 30px 15px;
-            text-align: center;
-            box-shadow: var(--outer-shadow);
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-card-3d:active {
+        .card-3d:active {
             box-shadow: var(--inner-shadow);
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
+        .emoji { font-size: 50px; display: block; margin-bottom: 10px; filter: drop-shadow(4px 4px 6px rgba(0,0,0,0.1)); }
+        .text { font-weight: 800; color: #555; }
 
-        .emoji-3d {
-            font-size: 50px;
-            margin-bottom: 10px;
-            filter: drop-shadow(4px 4px 10px rgba(0,0,0,0.2));
-        }
-
-        .label-3d {
-            font-weight: 800;
-            color: #555;
-            font-size: 15px;
-        }
-
-        /* 4. صفحة الملف الشخصي (تحديد النوع) */
-        .page { display: none; padding: 20px; animation: fadeIn 0.5s; }
+        /* 3. الصفحات */
+        .page { display: none; padding: 20px; animation: fade 0.4s; }
         .page.active { display: block; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .profile-selection {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: var(--outer-shadow);
-            margin-top: 20px;
+        .form-3d {
+            background: var(--bg); padding: 20px; border-radius: 30px;
+            box-shadow: var(--shadow-light), var(--shadow-white);
         }
-
-        .role-option {
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #eee;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
+        input, select {
+            width: 100%; padding: 15px; margin: 10px 0;
+            border: none; border-radius: 15px;
+            background: var(--bg); box-shadow: var(--inner-shadow);
+            box-sizing: border-box; outline: none;
         }
-
-        .role-option:hover { border-color: var(--primary); color: var(--primary); }
-
-        /* الشريط السفلي */
-        .nav-bottom {
-            position: fixed;
-            bottom: 0; width: 100%; height: 70px;
-            background: white; display: flex;
-            justify-content: space-around; align-items: center;
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        .btn {
+            background: var(--primary); color: white; padding: 15px;
+            border: none; border-radius: 15px; width: 100%;
+            font-weight: bold; margin-top: 10px; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div class="ticker-wrapper">
-        <div class="ticker-text" id="offerTicker">
-             🔥 سوبر ماركت المتميز: عرض على المكرونة بـ 20 جنيه بدل 30 جنيه الحق الآن! &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-             🎁 صيدلية الشفاء: خصم 50% على مستلزمات الأطفال لفترة محدودة!
+    <div class="ticker-bar">
+        <div class="ticker-content">
+            🔥 سوبر ماركت المتميز: مكرونة بـ 20 بدل 30 جنيه! &nbsp;&nbsp;&nbsp; 🚀 عرض خاص من مطعم البركة.. اطلب الآن!
         </div>
     </div>
 
     <div id="home" class="page active">
-        <header>
-            <h1 style="margin:0; color:var(--primary);">New Shop</h1>
-            <p>أهلاً بك يا يحيى - عالمك ثلاثي الأبعاد</p>
-        </header>
+        <h2 style="text-align:center; color:#444;">New Shop Pro</h2>
+        <div class="grid">
+            <div class="card-3d" onclick="show('merchant')">
+                <span class="emoji">💼</span><span class="text">دخول التجار</span>
+            </div>
+            <div class="card-3d" onclick="show('profile')">
+                <span class="emoji">👤</span><span class="text">الملف الشخصي</span>
+            </div>
+            <div class="card-3d" onclick="show('stores')">
+                <span class="emoji">🏪</span><span class="text">المتاجر</span>
+            </div>
+            <div class="card-3d" onclick="show('delivery')">
+                <span class="emoji">🛵</span><span class="text">الدليفري</span>
+            </div>
+        </div>
+    </div>
 
-        <div class="grid-container">
-            <div class="icon-card-3d" onclick="goToPage('stores')">
-                <span class="emoji-3d">🏪</span>
-                <span class="label-3d">المتاجر</span>
-            </div>
-            <div class="icon-card-3d" onclick="goToPage('delivery')">
-                <span class="emoji-3d">🛵</span>
-                <span class="label-3d">الدليفري</span>
-            </div>
-            <div class="icon-card-3d" onclick="goToPage('profile')">
-                <span class="emoji-3d">👤</span>
-                <span class="label-3d">الملف الشخصي</span>
-            </div>
-            <div class="icon-card-3d" onclick="goToPage('merchant')">
-                <span class="emoji-3d">💼</span>
-                <span class="label-3d">بوابة التجار</span>
-            </div>
+    <div id="merchant" class="page">
+        <h3>تسجيل تاجر جديد</h3>
+        <div class="form-3d">
+            <input type="text" placeholder="اسم المحل (مثل: سوبر ماركت المتميز)">
+            <select>
+                <option>نوع المحل (صيدلية، مطعم...)</option>
+                <option>سوبر ماركت</option> <option>مطعم</option>
+            </select>
+            <input type="email" placeholder="الإيميل">
+            <input type="text" placeholder="الموقع الجغرافي">
+            <button class="btn" onclick="show('home')">حفظ وإرسال</button>
         </div>
     </div>
 
     <div id="profile" class="page">
-        <header><h2>إعداد الملف الشخصي</h2></header>
-        <div class="profile-selection">
-            <p style="text-align:center;">اختر هويتك في التطبيق:</p>
-            <div class="role-option" onclick="setRole('زبون')">👤 أنا زبون (مشتري)</div>
-            <div class="role-option" onclick="setRole('تاجر')">🏪 أنا تاجر (صاحب محل)</div>
-            <div class="role-option" onclick="setRole('دليفري')">🛵 أنا دليفري (مندوب)</div>
+        <h3>الملف الشخصي</h3>
+        <div class="form-3d">
+            <label>حدد هويتك:</label>
+            <select id="userRole">
+                <option value="customer">زبون</option>
+                <option value="merchant">تاجر</option>
+                <option value="delivery">دليفري</option>
+            </select>
+            <button class="btn" onclick="alert('تم حفظ البيانات'); show('home')">حفظ</button>
         </div>
-        <button onclick="goToPage('home')" style="margin-top:20px; width:100%; padding:15px; border:none; border-radius:15px; background:var(--primary); color:white; font-weight:bold;">حفظ والعودة</button>
     </div>
 
-    <div id="stores" class="page"> <header><h2>المتاجر</h2></header><button onclick="goToPage('home')">عودة</button> </div>
-    <div id="delivery" class="page"> <header><h2>الدليفري</h2></header><button onclick="goToPage('home')">عودة</button> </div>
-    <div id="merchant" class="page"> <header><h2>تسجيل التاجر</h2></header><button onclick="goToPage('home')">عودة</button> </div>
-
     <script>
-        function goToPage(id) {
+        function show(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             window.scrollTo(0,0);
         }
-
-        function setRole(role) {
-            alert("تم تحديد هويتك كـ: " + role);
-            // هنا مستقبلاً سنخزن هذه المعلومة
-        }
-
-        // كود لتغيير العروض برمجياً
-        function updateOffer(shopName, product, oldPrice, newPrice) {
-            const ticker = document.getElementById('offerTicker');
-            ticker.innerHTML = `🔥 ${shopName}: عرض على ${product} بـ ${newPrice} جنيه بدل ${oldPrice} جنيه الحق الآن!`;
-        }
     </script>
 </body>
 </html>
+
