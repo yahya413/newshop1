@@ -1,137 +1,206 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="mainHtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Shop - Pro 3D</title>
+    <title>New Shop - Professional</title>
     <style>
         :root {
-            --bg: #e0e5ec;
-            --primary: #ff4b2b;
-            --shadow-light: 9px 9px 16px rgb(163,177,198,0.6);
-            --shadow-white: -9px -9px 16px rgba(255,255,255, 0.5);
-            --inner-shadow: inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px rgba(255,255,255, 0.5);
+            --primary: #4a90e2; /* أزرق مريح للعين */
+            --bg: #f8f9fa;
+            --text: #2d3436;
+            --3d-shadow: 8px 8px 15px #d1d9e6, -8px -8px 15px #ffffff;
+            --inner-shadow: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff;
         }
 
         body {
-            margin: 0; background-color: var(--bg);
-            font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
+            margin: 0; background: var(--bg); font-family: 'Segoe UI', sans-serif;
+            color: var(--text); transition: 0.3s;
         }
 
-        /* 1. شريط العروض (التيكر) */
-        .ticker-bar {
-            background: #fff; color: var(--primary);
-            padding: 12px 0; font-weight: bold;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky; top: 0; z-index: 1000;
-            overflow: hidden; white-space: nowrap;
+        /* شريط العروض العلوي */
+        .offer-ticker {
+            background: #fff; border-bottom: 2px solid var(--primary);
+            padding: 10px; font-weight: bold; overflow: hidden; white-space: nowrap;
         }
-        .ticker-content {
-            display: inline-block; animation: scroll 15s linear infinite;
-            padding-left: 100%;
-        }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(100%); } }
+        .ticker-move { display: inline-block; animation: ticker 20s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        /* 2. الأيقونات الـ 3D */
-        .grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 25px; padding: 25px;
+        /* الهيدر العلوي */
+        .top-nav {
+            display: flex; justify-content: space-between; padding: 15px;
+            align-items: center; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+
+        /* القائمة الجانبية للتجار */
+        .sidebar {
+            position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
+            background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: 0.3s; z-index: 2000; padding: 20px;
+        }
+        .sidebar.open { right: 0; }
+
+        /* الأزرار الـ 3D المريحة */
         .card-3d {
-            background: var(--bg); border-radius: 30px;
-            padding: 30px 15px; text-align: center;
-            box-shadow: var(--shadow-light), var(--shadow-white);
-            cursor: pointer; transition: 0.2s; border: none;
+            background: var(--bg); border-radius: 20px; padding: 20px;
+            text-align: center; box-shadow: var(--3d-shadow);
+            cursor: pointer; transition: 0.2s; border: none; margin: 10px;
         }
-        .card-3d:active {
-            box-shadow: var(--inner-shadow);
-            transform: scale(0.96);
-        }
-        .emoji { font-size: 50px; display: block; margin-bottom: 10px; filter: drop-shadow(4px 4px 6px rgba(0,0,0,0.1)); }
-        .text { font-weight: 800; color: #555; }
+        .card-3d:active { box-shadow: var(--inner-shadow); transform: scale(0.98); }
 
-        /* 3. الصفحات */
-        .page { display: none; padding: 20px; animation: fade 0.4s; }
+        /* الصفحات */
+        .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .page.active { display: block; }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .form-3d {
-            background: var(--bg); padding: 20px; border-radius: 30px;
-            box-shadow: var(--shadow-light), var(--shadow-white);
-        }
+        /* تصميم الفورم المريح */
         input, select {
-            width: 100%; padding: 15px; margin: 10px 0;
-            border: none; border-radius: 15px;
-            background: var(--bg); box-shadow: var(--inner-shadow);
+            width: 100%; padding: 12px; margin: 10px 0; border: none;
+            border-radius: 10px; background: var(--bg); box-shadow: var(--inner-shadow);
             box-sizing: border-box; outline: none;
         }
-        .btn {
-            background: var(--primary); color: white; padding: 15px;
-            border: none; border-radius: 15px; width: 100%;
-            font-weight: bold; margin-top: 10px; cursor: pointer;
+        .btn-main {
+            background: var(--primary); color: white; border: none; padding: 12px 25px;
+            border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%;
         }
+
+        .back-btn { background: #ddd; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="ticker-bar">
-        <div class="ticker-content">
-            🔥 سوبر ماركت المتميز: مكرونة بـ 20 بدل 30 جنيه! &nbsp;&nbsp;&nbsp; 🚀 عرض خاص من مطعم البركة.. اطلب الآن!
-        </div>
+    <div id="sidebar" class="sidebar">
+        <h3>بوابة التجار</h3>
+        <p>سجل محلك الآن وابدأ البيع</p>
+        <button class="btn-main" onclick="showPage('merchantReg')">تسجيل محل جديد</button>
+        <br><br>
+        <button class="btn-main" style="background:#636e72" onclick="toggleSidebar()">إغلاق</button>
+    </div>
+
+    <div class="top-nav">
+        <button onclick="toggleSidebar()">☰ بوابة التاجر</button>
+        <h2 style="margin:0; color:var(--primary)">New Shop</h2>
+        <button onclick="toggleLang()">EN / عربي</button>
+    </div>
+
+    <div class="offer-ticker" id="tickerSection" style="display: none;">
+        <div class="ticker-move" id="tickerText"></div>
     </div>
 
     <div id="home" class="page active">
-        <h2 style="text-align:center; color:#444;">New Shop Pro</h2>
-        <div class="grid">
-            <div class="card-3d" onclick="show('merchant')">
-                <span class="emoji">💼</span><span class="text">دخول التجار</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr;">
+            <div class="card-3d" onclick="showPage('stores')">
+                <span style="font-size:40px">🏪</span><br><b>المتاجر</b>
             </div>
-            <div class="card-3d" onclick="show('profile')">
-                <span class="emoji">👤</span><span class="text">الملف الشخصي</span>
+            <div class="card-3d" onclick="showPage('delivery')">
+                <span style="font-size:40px">🛵</span><br><b>الدليفري</b>
             </div>
-            <div class="card-3d" onclick="show('stores')">
-                <span class="emoji">🏪</span><span class="text">المتاجر</span>
+            <div class="card-3d" onclick="showPage('profile')">
+                <span style="font-size:40px">👤</span><br><b>حسابي</b>
             </div>
-            <div class="card-3d" onclick="show('delivery')">
-                <span class="emoji">🛵</span><span class="text">الدليفري</span>
+            <div class="card-3d" onclick="alert('قريباً...')">
+                <span style="font-size:40px">🎁</span><br><b>عروض حصرية</b>
             </div>
         </div>
     </div>
 
-    <div id="merchant" class="page">
-        <h3>تسجيل تاجر جديد</h3>
-        <div class="form-3d">
-            <input type="text" placeholder="اسم المحل (مثل: سوبر ماركت المتميز)">
+    <div id="stores" class="page">
+        <button class="back-btn" onclick="showPage('home')">⬅ رجوع</button>
+        <h3>تصفح المتاجر</h3>
+        <input type="text" id="storeSearch" placeholder="ابحث عن (حلاق، مطعم، سوبر ماركت...)" onkeyup="filterStores()">
+        <div id="storesList">
+            <div class="card-3d" onclick="tryBuy('سوبر ماركت الأمانة')">سوبر ماركت الأمانة</div>
+            <div class="card-3d" onclick="tryBuy('حلاق الشياكة')">حلاق الشياكة</div>
+            <div class="card-3d" onclick="tryBuy('سايبر نت')">سايبر نت</div>
+            <div class="card-3d" onclick="tryBuy('مطعم الهناء')">مطعم الهناء</div>
+            <div class="card-3d" onclick="tryBuy('مول العرب')">مول العرب</div>
+        </div>
+    </div>
+
+    <div id="customerLogin" class="page">
+        <button class="back-btn" onclick="showPage('stores')">⬅ رجوع</button>
+        <h3>إكمال بيانات الشراء</h3>
+        <p id="targetStore"></p>
+        <div class="form-3d" style="background:white; padding:20px; border-radius:20px;">
+            <input type="email" placeholder="البريد الإلكتروني">
+            <input type="text" placeholder="الموقع الجغرافي (GPS)">
             <select>
-                <option>نوع المحل (صيدلية، مطعم...)</option>
-                <option>سوبر ماركت</option> <option>مطعم</option>
+                <option>وسيلة الدفع</option>
+                <option>كاش عند الاستلام</option>
+                <option>محفظة إلكترونية</option>
+                <option>فيزا</option>
             </select>
-            <input type="email" placeholder="الإيميل">
-            <input type="text" placeholder="الموقع الجغرافي">
-            <button class="btn" onclick="show('home')">حفظ وإرسال</button>
+            <button class="btn-main" onclick="alert('تم حفظ بياناتك وتأكيد الطلب!'); showPage('home')">تأكيد الشراء</button>
         </div>
     </div>
 
-    <div id="profile" class="page">
-        <h3>الملف الشخصي</h3>
-        <div class="form-3d">
-            <label>حدد هويتك:</label>
-            <select id="userRole">
-                <option value="customer">زبون</option>
-                <option value="merchant">تاجر</option>
-                <option value="delivery">دليفري</option>
-            </select>
-            <button class="btn" onclick="alert('تم حفظ البيانات'); show('home')">حفظ</button>
-        </div>
+    <div id="merchantReg" class="page">
+        <button class="back-btn" onclick="toggleSidebar(); showPage('home')">⬅ رجوع</button>
+        <h3>تسجيل محل جديد</h3>
+        <input type="text" placeholder="اسم المحل">
+        <select>
+            <option>نوع المحل</option>
+            <option>سوبر ماركت</option>
+            <option>صيدلية</option>
+            <option>حلاق</option>
+            <option>سايبر</option>
+            <option>مطعم</option>
+            <option>مول</option>
+        </select>
+        <input type="text" placeholder="إثبات الهوية">
+        <button class="btn-main" onclick="addOffer()">تسجيل وإضافة عرض تجريبي</button>
     </div>
 
     <script>
-        function show(id) {
+        // تبديل الصفحات
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
+            if(id !== 'merchantReg') document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // القائمة الجانبية
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // اللغة
+        function toggleLang() {
+            let html = document.getElementById('mainHtml');
+            if(html.dir === 'rtl') {
+                html.dir = 'ltr'; html.lang = 'en';
+            } else {
+                html.dir = 'rtl'; html.lang = 'ar';
+            }
+        }
+
+        // محاولة الشراء
+        function tryBuy(storeName) {
+            document.getElementById('targetStore').innerText = "أنت الآن تشتري من: " + storeName;
+            showPage('customerLogin');
+        }
+
+        // محرك البحث
+        function filterStores() {
+            let input = document.getElementById('storeSearch').value.toLowerCase();
+            let cards = document.getElementById('storesList').getElementsByClassName('card-3d');
+            for (let i = 0; i < cards.length; i++) {
+                if (cards[i].innerText.toLowerCase().includes(input)) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // إضافة عرض (تخيل أن التاجر أضاف عرضاً)
+        function addOffer() {
+            let store = "محل تجريبي";
+            document.getElementById('tickerSection').style.display = "block";
+            document.getElementById('tickerText').innerText = "🔥 عرض جديد من " + store + ": خصم 20% على كل شيء!";
+            alert("تم تسجيل المحل وظهر عرضك في الشريط العلوي!");
+            showPage('home');
         }
     </script>
 </body>
 </html>
-
