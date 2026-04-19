@@ -3,204 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Shop - Merchant Portal</title>
+    <title>New Shop Pro - 3D Experience</title>
     <style>
         :root {
-            --primary: #ff4d4d;
-            --secondary: #ff944d;
-            --bg: #f4f7f6;
-            --card-bg: #ffffff;
-            --shadow: 0 10px 20px rgba(0,0,0,0.08);
+            --primary: #ff4b2b;
+            --secondary: #ff416c;
+            --bg-color: #e0e5ec; /* لون خلفية مناسب للـ 3D */
+            /* ظلال الـ 3D العميقة */
+            --outer-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+            --inner-shadow: inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px rgba(255,255,255, 0.5);
         }
 
         body {
             margin: 0;
-            background: var(--bg);
-            font-family: 'Segoe UI', sans-serif;
-            color: #333;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow-x: hidden;
         }
 
-        /* تصميم الهيدر 3D */
+        /* 1. شريط العروض المتحرك (فوق في الشاشة) */
+        .ticker-wrapper {
+            background: white;
+            color: var(--primary);
+            padding: 10px 0;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .ticker-text {
+            display: inline-block;
+            animation: ticker 15s linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100%, 0); }
+        }
+
+        /* 2. الهيدر والترحيب */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 30px 20px;
             text-align: center;
-            border-radius: 0 0 40px 40px;
-            box-shadow: 0 8px 20px rgba(255, 77, 77, 0.2);
-            margin-bottom: 30px;
+            padding: 20px;
+            color: #444;
         }
 
-        /* الحاويات والصفحات */
-        .container { padding: 20px; max-width: 500px; margin: auto; }
-        .page { display: none; animation: slideUp 0.4s ease; }
+        /* 3. تصميم الأيقونات 3D (Neumorphism Style) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 25px;
+        }
+
+        .icon-card-3d {
+            background: var(--bg-color);
+            border-radius: 30px;
+            padding: 30px 15px;
+            text-align: center;
+            box-shadow: var(--outer-shadow);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-card-3d:active {
+            box-shadow: var(--inner-shadow);
+            transform: scale(0.95);
+        }
+
+        .emoji-3d {
+            font-size: 50px;
+            margin-bottom: 10px;
+            filter: drop-shadow(4px 4px 10px rgba(0,0,0,0.2));
+        }
+
+        .label-3d {
+            font-weight: 800;
+            color: #555;
+            font-size: 15px;
+        }
+
+        /* 4. صفحة الملف الشخصي (تحديد النوع) */
+        .page { display: none; padding: 20px; animation: fadeIn 0.5s; }
         .page.active { display: block; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* الأزرار والأيقونات 3D */
-        .btn-3d {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            border-bottom: 6px solid #e0e0e0;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 20px;
-        }
-
-        .btn-3d:active {
-            transform: translateY(4px);
-            border-bottom-width: 2px;
-        }
-
-        .icon { font-size: 50px; display: block; margin-bottom: 10px; }
-
-        /* نموذج تسجيل التاجر */
-        .form-card {
+        .profile-selection {
             background: white;
-            padding: 25px;
-            border-radius: 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid #eee;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--outer-shadow);
+            margin-top: 20px;
         }
 
-        .input-group { margin-bottom: 18px; text-align: right; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-        
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #f0f0f0;
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-            transition: 0.3s;
-            background: #fafafa;
-            box-sizing: border-box;
-        }
-
-        input:focus, select:focus { border-color: var(--secondary); background: white; }
-
-        .submit-btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 16px;
-            width: 100%;
+        .role-option {
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #eee;
             border-radius: 15px;
-            font-size: 17px;
+            text-align: center;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
-            margin-top: 10px;
+            transition: 0.3s;
         }
 
-        .back-btn {
-            background: none;
-            border: none;
-            color: #777;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .role-option:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* الشريط السفلي */
+        .nav-bottom {
+            position: fixed;
+            bottom: 0; width: 100%; height: 70px;
+            background: white; display: flex;
+            justify-content: space-around; align-items: center;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
-    <div id="homePage" class="page active">
+    <div class="ticker-wrapper">
+        <div class="ticker-text" id="offerTicker">
+             🔥 سوبر ماركت المتميز: عرض على المكرونة بـ 20 جنيه بدل 30 جنيه الحق الآن! &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+             🎁 صيدلية الشفاء: خصم 50% على مستلزمات الأطفال لفترة محدودة!
+        </div>
+    </div>
+
+    <div id="home" class="page active">
         <header>
-            <h1 style="margin:0;">New Shop</h1>
-            <p>أهلاً بك يا يحيى في متجرك المتطور</p>
+            <h1 style="margin:0; color:var(--primary);">New Shop</h1>
+            <p>أهلاً بك يا يحيى - عالمك ثلاثي الأبعاد</p>
         </header>
 
-        <div class="container">
-            <div class="btn-3d" onclick="goToPage('merchantPage')">
-                <span class="icon">💼</span>
-                <span style="font-weight:bold; font-size:18px;">تسجيل دخول التجار</span>
-                <p style="color:#888; font-size:13px; margin:5px 0 0;">اضف محلك وابدأ البيع الآن</p>
+        <div class="grid-container">
+            <div class="icon-card-3d" onclick="goToPage('stores')">
+                <span class="emoji-3d">🏪</span>
+                <span class="label-3d">المتاجر</span>
             </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="btn-3d" style="padding: 15px;">
-                    <span class="icon" style="font-size:30px;">🛵</span>
-                    <span>الدليفري</span>
-                </div>
-                <div class="btn-3d" style="padding: 15px;">
-                    <span class="icon" style="font-size:30px;">🏪</span>
-                    <span>المتاجر</span>
-                </div>
+            <div class="icon-card-3d" onclick="goToPage('delivery')">
+                <span class="emoji-3d">🛵</span>
+                <span class="label-3d">الدليفري</span>
             </div>
-        </div>
-    </div>
-
-    <div id="merchantPage" class="page">
-        <div class="container">
-            <button class="back-btn" onclick="goToPage('homePage')"> ➡️ العودة للرئيسية </button>
-            
-            <div class="form-card">
-                <h2 style="text-align:center; margin-top:0; color:var(--primary);">بيانات التاجر</h2>
-                <p style="text-align:center; color:#777; font-size:13px; margin-bottom:25px;">يرجى إدخال بيانات دقيقة لتوثيق متجرك</p>
-
-                <div class="input-group">
-                    <label>اسم المحل / المتجر</label>
-                    <input type="text" placeholder="مثال: سوبر ماركت الأمانة">
-                </div>
-
-                <div class="input-group">
-                    <label>نوع النشاط</label>
-                    <select>
-                        <option>اختر النوع...</option>
-                        <option>صيدلية</option>
-                        <option>حلاق</option>
-                        <option>سوبر ماركت</option>
-                        <option>مطعم</option>
-                        <option>بقالة</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label>البريد الإلكتروني للمتجر</label>
-                    <input type="email" placeholder="email@store.com">
-                </div>
-
-                <div class="input-group">
-                    <label>الموقع الجغرافي (GPS)</label>
-                    <input type="text" placeholder="رابط خرائط جوجل أو العنوان التفصيلي">
-                </div>
-
-                <div class="input-group">
-                    <label>وسائل التواصل (واتساب/تليجرام)</label>
-                    <input type="text" placeholder="رقم الموبايل">
-                </div>
-
-                <div class="input-group">
-                    <label>إثبات الشخصية</label>
-                    <input type="text" placeholder="رقم البطاقة أو السجل التجاري">
-                </div>
-
-                <button class="submit-btn" onclick="alert('تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً.')">إنشاء حساب تاجر</button>
+            <div class="icon-card-3d" onclick="goToPage('profile')">
+                <span class="emoji-3d">👤</span>
+                <span class="label-3d">الملف الشخصي</span>
+            </div>
+            <div class="icon-card-3d" onclick="goToPage('merchant')">
+                <span class="emoji-3d">💼</span>
+                <span class="label-3d">بوابة التجار</span>
             </div>
         </div>
     </div>
+
+    <div id="profile" class="page">
+        <header><h2>إعداد الملف الشخصي</h2></header>
+        <div class="profile-selection">
+            <p style="text-align:center;">اختر هويتك في التطبيق:</p>
+            <div class="role-option" onclick="setRole('زبون')">👤 أنا زبون (مشتري)</div>
+            <div class="role-option" onclick="setRole('تاجر')">🏪 أنا تاجر (صاحب محل)</div>
+            <div class="role-option" onclick="setRole('دليفري')">🛵 أنا دليفري (مندوب)</div>
+        </div>
+        <button onclick="goToPage('home')" style="margin-top:20px; width:100%; padding:15px; border:none; border-radius:15px; background:var(--primary); color:white; font-weight:bold;">حفظ والعودة</button>
+    </div>
+
+    <div id="stores" class="page"> <header><h2>المتاجر</h2></header><button onclick="goToPage('home')">عودة</button> </div>
+    <div id="delivery" class="page"> <header><h2>الدليفري</h2></header><button onclick="goToPage('home')">عودة</button> </div>
+    <div id="merchant" class="page"> <header><h2>تسجيل التاجر</h2></header><button onclick="goToPage('home')">عودة</button> </div>
 
     <script>
-        function goToPage(pageId) {
-            // إخفاء جميع الصفحات
+        function goToPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // إظهار الصفحة المطلوبة
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById(id).classList.add('active');
             window.scrollTo(0,0);
         }
-    </script>
 
+        function setRole(role) {
+            alert("تم تحديد هويتك كـ: " + role);
+            // هنا مستقبلاً سنخزن هذه المعلومة
+        }
+
+        // كود لتغيير العروض برمجياً
+        function updateOffer(shopName, product, oldPrice, newPrice) {
+            const ticker = document.getElementById('offerTicker');
+            ticker.innerHTML = `🔥 ${shopName}: عرض على ${product} بـ ${newPrice} جنيه بدل ${oldPrice} جنيه الحق الآن!`;
+        }
+    </script>
 </body>
 </html>
