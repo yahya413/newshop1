@@ -3,302 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Shop - App</title>
+    <title>New Shop - Merchant Portal</title>
     <style>
-        /* الألوان الأساسية */
         :root {
-            --light-red: #ff4d4d;
-            --orange: #ff944d;
-            --bg-color: #f8f9fa;
-            --text-dark: #333;
-            --text-light: #777;
+            --primary: #ff4d4d;
+            --secondary: #ff944d;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 20px rgba(0,0,0,0.08);
         }
 
         body {
             margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            background: var(--bg);
+            font-family: 'Segoe UI', sans-serif;
+            color: #333;
         }
 
-        /* شاشة الترحيب */
-        #splash {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            animation: fadeOut 0.5s forwards 3s;
-        }
-
-        .logo {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(45deg, var(--light-red), var(--orange));
-            border-radius: 20px;
-            margin-bottom: 20px;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        .brand-name {
-            font-size: 35px;
-            font-weight: bold;
-            color: var(--light-red);
-            margin: 0;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; visibility: hidden; z-index: -1; }
-        }
-
-        /* واجهة التطبيق الرئيسية (تظهر بعد الترحيب) */
-        #app-container {
-            opacity: 0;
-            animation: fadeIn 0.5s forwards 3.2s;
-            padding-bottom: 70px; /* مساحة للشريط السفلي */
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        /* الهيدر العلوي */
+        /* تصميم الهيدر 3D */
         header {
-            background: linear-gradient(to right, var(--light-red), var(--orange));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border-radius: 0 0 40px 40px;
+            box-shadow: 0 8px 20px rgba(255, 77, 77, 0.2);
+            margin-bottom: 30px;
         }
 
-        header h2 {
-            margin: 0;
-            font-size: 24px;
-        }
+        /* الحاويات والصفحات */
+        .container { padding: 20px; max-width: 500px; margin: auto; }
+        .page { display: none; animation: slideUp 0.4s ease; }
+        .page.active { display: block; }
 
-        /* الصفحات المتغيرة */
-        .page {
-            display: none; /* مخفية افتراضياً */
-            padding: 20px;
-            animation: slideIn 0.3s ease-in-out;
-        }
-
-        .page.active {
-            display: block; /* تظهر فقط الصفحة النشطة */
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* تصميم الصفحة الرئيسية (احترافي) */
-        .home-banner {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
+        /* الأزرار والأيقونات 3D */
+        .btn-3d {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border-bottom: 6px solid #e0e0e0;
+            cursor: pointer;
+            transition: 0.2s;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            text-align: center;
         }
 
-        .home-banner h3 {
-            color: var(--text-dark);
-            margin-top: 0;
+        .btn-3d:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
         }
 
-        .home-banner p {
-            color: var(--text-light);
-            font-size: 14px;
-        }
+        .icon { font-size: 50px; display: block; margin-bottom: 10px; }
 
-        .services-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .service-card {
+        /* نموذج تسجيل التاجر */
+        .form-card {
             background: white;
-            padding: 20px 10px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            color: var(--text-dark);
-            font-weight: bold;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: 0.3s;
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid #eee;
         }
 
-        .service-card:hover {
-            border-color: var(--orange);
-            color: var(--light-red);
-        }
-
-        .service-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        /* الشريط السفلي للتنقل (Bottom Nav) */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
+        .input-group { margin-bottom: 18px; text-align: right; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
+        
+        input, select {
             width: 100%;
-            height: 65px;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-light);
-            font-size: 12px;
-            cursor: pointer;
+            padding: 14px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
             transition: 0.3s;
-            width: 25%;
+            background: #fafafa;
+            box-sizing: border-box;
         }
 
-        .nav-item .icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
+        input:focus, select:focus { border-color: var(--secondary); background: white; }
 
-        .nav-item.active {
-            color: var(--light-red);
+        .submit-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 15px;
+            font-size: 17px;
             font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+            margin-top: 10px;
         }
 
-        .nav-item.active .icon {
-            transform: translateY(-3px);
+        .back-btn {
+            background: none;
+            border: none;
+            color: #777;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div id="splash">
-        <div class="logo"></div>
-        <h1 class="brand-name">New Shop</h1>
-    </div>
-
-    <div id="app-container">
-        
+    <div id="homePage" class="page active">
         <header>
-            <h2>New Shop</h2>
+            <h1 style="margin:0;">New Shop</h1>
+            <p>أهلاً بك يا يحيى في متجرك المتطور</p>
         </header>
 
-        <div id="page-home" class="page active">
-            <div class="home-banner">
-                <h3>مرحباً بك في عالم التسوق</h3>
-                <p>اكتشف أفضل المتاجر، العروض الحصرية، وخدمة توصيل سريعة في مكان واحد.</p>
+        <div class="container">
+            <div class="btn-3d" onclick="goToPage('merchantPage')">
+                <span class="icon">💼</span>
+                <span style="font-weight:bold; font-size:18px;">تسجيل دخول التجار</span>
+                <p style="color:#888; font-size:13px; margin:5px 0 0;">اضف محلك وابدأ البيع الآن</p>
             </div>
 
-            <div class="services-grid">
-                <div class="service-card" onclick="switchPage('page-stores', this)">
-                    <span class="service-icon">🏪</span>
-                    تصفح المتاجر
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="btn-3d" style="padding: 15px;">
+                    <span class="icon" style="font-size:30px;">🛵</span>
+                    <span>الدليفري</span>
                 </div>
-                <div class="service-card" onclick="switchPage('page-delivery', this)">
-                    <span class="service-icon">🛵</span>
-                    خدمة الدليفري
-                </div>
-                <div class="service-card">
-                    <span class="service-icon">🔥</span>
-                    عروض اليوم
-                </div>
-                <div class="service-card">
-                    <span class="service-icon">➕</span>
-                    إضافة منتج (للتاجر)
+                <div class="btn-3d" style="padding: 15px;">
+                    <span class="icon" style="font-size:30px;">🏪</span>
+                    <span>المتاجر</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="page-stores" class="page">
-            <h3 style="text-align: center; color: var(--text-light); margin-top: 50px;">سيتم إضافة قسم المتاجر والعروض هنا...</h3>
+    <div id="merchantPage" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="goToPage('homePage')"> ➡️ العودة للرئيسية </button>
+            
+            <div class="form-card">
+                <h2 style="text-align:center; margin-top:0; color:var(--primary);">بيانات التاجر</h2>
+                <p style="text-align:center; color:#777; font-size:13px; margin-bottom:25px;">يرجى إدخال بيانات دقيقة لتوثيق متجرك</p>
+
+                <div class="input-group">
+                    <label>اسم المحل / المتجر</label>
+                    <input type="text" placeholder="مثال: سوبر ماركت الأمانة">
+                </div>
+
+                <div class="input-group">
+                    <label>نوع النشاط</label>
+                    <select>
+                        <option>اختر النوع...</option>
+                        <option>صيدلية</option>
+                        <option>حلاق</option>
+                        <option>سوبر ماركت</option>
+                        <option>مطعم</option>
+                        <option>بقالة</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>البريد الإلكتروني للمتجر</label>
+                    <input type="email" placeholder="email@store.com">
+                </div>
+
+                <div class="input-group">
+                    <label>الموقع الجغرافي (GPS)</label>
+                    <input type="text" placeholder="رابط خرائط جوجل أو العنوان التفصيلي">
+                </div>
+
+                <div class="input-group">
+                    <label>وسائل التواصل (واتساب/تليجرام)</label>
+                    <input type="text" placeholder="رقم الموبايل">
+                </div>
+
+                <div class="input-group">
+                    <label>إثبات الشخصية</label>
+                    <input type="text" placeholder="رقم البطاقة أو السجل التجاري">
+                </div>
+
+                <button class="submit-btn" onclick="alert('تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً.')">إنشاء حساب تاجر</button>
+            </div>
         </div>
-
-        <div id="page-delivery" class="page">
-            <h3 style="text-align: center; color: var(--text-light); margin-top: 50px;">سيتم إضافة قسم تقييمات الدليفري هنا...</h3>
-        </div>
-
-        <div id="page-profile" class="page">
-            <h3 style="text-align: center; color: var(--text-light); margin-top: 50px;">سيتم إضافة قسم الملف الشخصي وتحديد النوع والصلاحيات هنا...</h3>
-        </div>
-
-        <nav class="bottom-nav">
-            <div class="nav-item active" onclick="switchPage('page-home', this)">
-                <span class="icon">🏠</span>
-                <span>الرئيسية</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('page-stores', this)">
-                <span class="icon">🏪</span>
-                <span>المتاجر</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('page-delivery', this)">
-                <span class="icon">🛵</span>
-                <span>الدليفري</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('page-profile', this)">
-                <span class="icon">👤</span>
-                <span>حسابي</span>
-            </div>
-        </nav>
-
     </div>
 
     <script>
-        function switchPage(pageId, navElement) {
-            // 1. إخفاء كل الصفحات
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => page.classList.remove('active'));
-
-            // 2. إزالة التفعيل من كل الأيقونات في الشريط السفلي
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-
-            // 3. إظهار الصفحة المطلوبة
+        function goToPage(pageId) {
+            // إخفاء جميع الصفحات
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // إظهار الصفحة المطلوبة
             document.getElementById(pageId).classList.add('active');
-
-            // 4. تفعيل الأيقونة التي تم الضغط عليها (إذا تم الضغط من الشريط السفلي)
-            if(navElement && navElement.classList.contains('nav-item')) {
-                navElement.classList.add('active');
-            } else {
-                // إذا تم الضغط من البطاقات داخل الرئيسية، نفعل أيقونة القسم المناسب في الشريط
-                if(pageId === 'page-stores') navItems[1].classList.add('active');
-                if(pageId === 'page-delivery') navItems[2].classList.add('active');
-            }
-            
-            // التمرير لأعلى الصفحة عند التبديل
-            window.scrollTo(0, 0);
+            window.scrollTo(0,0);
         }
     </script>
+
 </body>
 </html>
