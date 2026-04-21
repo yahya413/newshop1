@@ -1,166 +1,90 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="mainHtml">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sook Mall Pro</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <title>New Shop | متجرك المفضل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --p: #6366f1; --bg: #f8fafc; --txt: #1e293b; --card: #ffffff; }
-        body { margin: 0; background: var(--bg); font-family: 'Segoe UI', sans-serif; color: var(--txt); }
-        .header { background: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top:0; z-index: 1000; }
-        .btn { padding: 10px 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-p { background: var(--p); color: white; width: 100%; }
-        .back-btn { background: #f1f5f9; color: var(--txt); }
-        
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s; max-width: 600px; margin: auto; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #f1f5f9; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #e2e8f0; outline: none; box-sizing: border-box; }
-        
-        /* Sidebar */
-        .side { position: fixed; top: 0; right: -100%; width: 280px; height: 100%; background: white; z-index: 2000; transition: 0.4s; padding: 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
-        .side.open { right: 0; }
-
-        .rating { color: #f59e0b; margin: 5px 0; }
-        .comment-box { background: #f8fafc; padding: 10px; border-radius: 10px; margin-top: 5px; font-size: 0.9em; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
 
-    <div class="side" id="side">
-        <h3>بوابة التاجر</h3>
-        <button class="btn btn-p" onclick="show('regPage')">تسجيل متجر</button>
-        <button class="btn btn-p" style="margin-top:10px; background:#475569" onclick="show('addProductPage')">إضافة منتجات</button>
-        <button class="btn" style="width:100%; margin-top:20px" onclick="toggleS()">إغلاق</button>
-    </div>
+    <header class="bg-yellow-400 p-4 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="text-2xl font-bold text-black">NEW <span class="text-white">SHOP</span></div>
+            
+            <div class="flex-1 max-w-2xl relative">
+                <input type="text" placeholder="ما الذي تبحث عنه؟" class="w-full p-2 pr-10 rounded-lg border-none focus:ring-2 focus:ring-blue-500">
+                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            </div>
 
-    <div class="header">
-        <button class="btn back-btn" onclick="toggleS()">☰</button>
-        <button class="btn back-btn" id="bHome" style="display:none" onclick="show('home')">🏠</button>
-        <h3 style="margin:0; color:var(--p)">Sook Mall</h3>
-        <button class="btn back-btn" onclick="toggleL()">EN/AR</button>
-    </div>
-
-    <div id="home" class="page active">
-        <div class="grid">
-            <div class="card" style="text-align:center" onclick="show('stores')"><span>🏪</span><br><b class="ln" data-ar="المتاجر" data-en="Stores">المتاجر</b></div>
-            <div class="card" style="text-align:center" onclick="show('deliv')"><span>🛵</span><br><b class="ln" data-ar="الدليفري" data-en="Delivery">الدليفري</b></div>
+            <div class="flex items-center gap-6 font-semibold">
+                <div class="cursor-pointer hover:text-white">تسجيل الدخول <i class="fas fa-user ml-1"></i></div>
+                <div class="cursor-pointer hover:text-white">السلة <i class="fas fa-shopping-cart ml-1"></i></div>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <div id="stores" class="page">
-        <h2 class="ln" data-ar="قائمة المتاجر" data-en="Stores List">قائمة المتاجر</h2>
-        <div id="storesCont"></div>
-    </div>
-
-    <div id="addProductPage" class="page">
-        <div class="card">
-            <h3>إضافة منتج جديد</h3>
-            <input type="text" id="pStore" placeholder="اسم متجرك المسجل">
-            <input type="text" id="pName" placeholder="اسم المنتج">
-            <input type="number" id="pPrice" placeholder="السعر">
-            <button class="btn btn-p" onclick="addP()">نشر المنتج</button>
+    <nav class="bg-white border-b overflow-x-auto whitespace-nowrap py-2 text-sm shadow-sm">
+        <div class="container mx-auto flex gap-8 px-4 justify-center">
+            <a href="#" class="hover:text-yellow-500 font-bold">الإلكترونيات</a>
+            <a href="#" class="hover:text-yellow-500 font-bold">السوبر ماركت</a>
+            <a href="#" class="hover:text-yellow-500 font-bold">أزياء الرجال</a>
+            <a href="#" class="hover:text-yellow-500 font-bold">أزياء النساء</a>
+            <a href="#" class="hover:text-yellow-500 font-bold">لوازم المنزل</a>
+            <a href="#" class="hover:text-yellow-500 font-bold">العروض اليومية</a>
         </div>
-    </div>
+    </nav>
 
-    <div id="deliv" class="page">
-        <div class="card" style="text-align:center">
-            <h3>قسم الدليفري</h3>
-            <p>قريباً.. تتبع طلباتك هنا</p>
-            <button class="btn btn-p" onclick="show('home')">الرجوع للرئيسية</button>
+    <section class="container mx-auto mt-4 px-4">
+        <div class="bg-blue-600 rounded-xl h-64 md:h-80 flex items-center justify-center text-white text-center relative overflow-hidden">
+            <div class="z-10">
+                <h1 class="text-4xl font-extrabold mb-4">عروض الربيع وصلت!</h1>
+                <p class="text-xl mb-6">خصومات تصل إلى 75% على جميع الأقسام</p>
+                <button class="bg-yellow-400 text-black px-8 py-3 rounded-full font-bold hover:bg-yellow-300 transition">اشترِ الآن</button>
+            </div>
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-500 rounded-full opacity-50"></div>
         </div>
-    </div>
+    </section>
 
-    <div id="buyPage" class="page">
-        <div class="card">
-            <h3>إكمال عملية الشراء</h3>
-            <input type="text" placeholder="العنوان بالتفصيل">
-            <select id="payM">
-                <option>اختر وسيلة الدفع</option>
-                <option>كاش عند الاستلام</option>
-                <option>فودافون كاش</option>
-                <option>بطاقة بنكية (Visa/Master)</option>
-            </select>
-            <button class="btn btn-p" onclick="alert('تم الطلب!'); show('home')">تأكيد</button>
+    <section class="container mx-auto mt-8 px-4">
+        <div class="flex gap-4 overflow-x-auto pb-4 justify-between no-scrollbar">
+            <div class="flex flex-col items-center min-w-[100px] cursor-pointer">
+                <div class="w-20 h-20 bg-white rounded-full shadow-md flex items-center justify-center hover:scale-110 transition">
+                    <i class="fas fa-mobile-alt text-3xl text-gray-700"></i>
+                </div>
+                <span class="mt-2 text-xs font-bold text-center">الموبايلات</span>
+            </div>
+            <div class="flex flex-col items-center min-w-[100px] cursor-pointer">
+                <div class="w-20 h-20 bg-white rounded-full shadow-md flex items-center justify-center hover:scale-110 transition">
+                    <i class="fas fa-laptop text-3xl text-gray-700"></i>
+                </div>
+                <span class="mt-2 text-xs font-bold text-center">الإلكترونيات</span>
+            </div>
+            <div class="flex flex-col items-center min-w-[100px] cursor-pointer">
+                <div class="w-20 h-20 bg-white rounded-full shadow-md flex items-center justify-center hover:scale-110 transition">
+                    <i class="fas fa-tshirt text-3xl text-gray-700"></i>
+                </div>
+                <span class="mt-2 text-xs font-bold text-center">الأزياء</span>
+            </div>
+            <div class="flex flex-col items-center min-w-[100px] cursor-pointer">
+                <div class="w-20 h-20 bg-white rounded-full shadow-md flex items-center justify-center hover:scale-110 transition">
+                    <i class="fas fa-apple-alt text-3xl text-gray-700"></i>
+                </div>
+                <span class="mt-2 text-xs font-bold text-center">السوبر ماركت</span>
+            </div>
+            <div class="flex flex-col items-center min-w-[100px] cursor-pointer">
+                <div class="w-20 h-20 bg-white rounded-full shadow-md flex items-center justify-center hover:scale-110 transition">
+                    <i class="fas fa-home text-3xl text-gray-700"></i>
+                </div>
+                <span class="mt-2 text-xs font-bold text-center">المنزل</span>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBmWe2JfT0XVYdWQFjPVnucz9sRT53CE7Y",
-            authDomain: "sook-mall3.firebaseapp.com",
-            databaseURL: "https://sook-mall3-default-rtdb.firebaseio.com",
-            projectId: "sook-mall3",
-            storageBucket: "sook-mall3.firebasestorage.app",
-            messagingSenderId: "270335602475",
-            appId: "1:270335602475:web:538a53ad1533b7bf109f6e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        function show(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById('bHome').style.display = id === 'home' ? 'none' : 'block';
-            toggleS(false);
-            if(id === 'stores') loadS();
-        }
-
-        function toggleS(f) { const s = document.getElementById('side'); if(f === false) s.classList.remove('open'); else s.classList.toggle('open'); }
-
-        function addP() {
-            const s = document.getElementById('pStore').value;
-            const n = document.getElementById('pName').value;
-            const p = document.getElementById('pPrice').value;
-            if(s && n) {
-                db.ref('products').push({ store: s, name: n, price: p });
-                alert('تم إضافة المنتج!'); show('home');
-            }
-        }
-
-        function loadS() {
-            const cont = document.getElementById('storesCont');
-            cont.innerHTML = "جاري التحميل...";
-            db.ref('new_stores').on('value', (snap) => {
-                cont.innerHTML = "";
-                snap.forEach(child => {
-                    const s = child.val();
-                    cont.innerHTML += `
-                        <div class="card">
-                            <div style="display:flex; justify-content:space-between">
-                                <b>${s.name}</b>
-                                <div class="rating">⭐ 4.5</div>
-                            </div>
-                            <p style="font-size:0.8em; color:gray">${s.type}</p>
-                            <div id="prod-${child.key}" style="border-top:1px solid #eee; padding-top:10px"></div>
-                            <button class="btn btn-p" style="margin-top:10px" onclick="show('buyPage')">شراء الآن</button>
-                            <div style="margin-top:10px">
-                                <input type="text" placeholder="أضف تعليق..." onkeydown="if(event.key==='Enter') addC('${child.key}', this.value)">
-                            </div>
-                        </div>
-                    `;
-                    loadP(s.name, child.key);
-                });
-            });
-        }
-
-        function loadP(sName, key) {
-            db.ref('products').orderByChild('store').equalTo(sName).on('value', (snap) => {
-                const pCont = document.getElementById('prod-' + key);
-                pCont.innerHTML = "";
-                snap.forEach(p => {
-                    const item = p.val();
-                    pCont.innerHTML += `<div style="font-size:0.9em">🔹 ${item.name} - ${item.price} ج.م</div>`;
-                });
-            });
-        }
-
-        function addC(key, val) { alert('شكراً لتقييمك!'); }
-    </script>
 </body>
 </html>
