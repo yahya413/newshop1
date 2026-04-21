@@ -7,175 +7,179 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap');
-        body { font-family: 'Cairo', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        body { font-family: 'Cairo', sans-serif; overflow-x: hidden; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* حركة انتقال الصور */
-        .slide-fade { animation: slideFade 0.6s ease-in-out; }
-        @keyframes slideFade {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+        /* تأثيرات الانتقال الناعمة للسلايدر */
+        .fade-slide { animation: fadeSlide 0.8s ease-in-out; }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
         }
+        .img-shadow { filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3)); }
     </style>
 </head>
 <body class="bg-gray-50">
 
-    <header class="bg-green-500 p-4 sticky top-0 z-50 shadow-md">
+    <header class="bg-green-600 p-4 sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div class="text-2xl font-extrabold text-black tracking-tighter">NEW <span class="text-white">SHOP</span></div>
+            <div class="text-2xl font-black text-black tracking-tighter cursor-pointer">NEW <span class="text-white">SHOP</span></div>
             
-            <div class="flex-1 max-w-2xl relative">
-                <input type="text" placeholder="بحث عن المنتجات، المحلات..." class="w-full p-2.5 pr-10 rounded-lg border-none focus:ring-2 focus:ring-black outline-none">
-                <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+            <div class="flex-1 max-w-2xl relative group">
+                <input type="text" placeholder="ما الذي تبحث عنه اليوم؟" 
+                       class="w-full p-3 pr-12 rounded-xl border-none shadow-inner focus:ring-2 focus:ring-black outline-none transition-all">
+                <i class="fas fa-search absolute left-4 top-4 text-gray-400 group-hover:text-green-600"></i>
             </div>
 
-            <div class="flex items-center gap-6 font-bold text-black text-sm md:text-base">
-                <div class="cursor-pointer hover:text-white transition">تسجيل الدخول <i class="fas fa-user ml-1"></i></div>
-                <div class="cursor-pointer hover:text-white transition relative">
-                    العربة <i class="fas fa-shopping-cart ml-1"></i>
-                    <span class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">0</span>
+            <div class="flex items-center gap-6 font-bold text-black">
+                <div class="hidden md:block cursor-pointer hover:text-white transition">حسابي <i class="fas fa-user-circle ml-1"></i></div>
+                <div class="cursor-pointer hover:text-white transition relative bg-green-700 md:bg-transparent p-2 rounded-lg md:p-0">
+                    <i class="fas fa-shopping-basket text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-yellow-400 text-black text-[10px] font-black rounded-full h-4 w-4 flex items-center justify-center shadow">3</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <nav class="bg-white border-b overflow-x-auto whitespace-nowrap py-3 shadow-sm no-scrollbar">
-        <div class="container mx-auto flex gap-8 px-4 justify-start md:justify-center text-sm font-bold text-black">
-            <a href="#" class="hover:text-green-600 uppercase">الإلكترونيات</a>
-            <a href="#" class="hover:text-green-600 uppercase">السوبر ماركت</a>
-            <a href="#" class="hover:text-green-600 uppercase">الموبايلات</a>
-            <a href="#" class="hover:text-green-600 uppercase">الجمال</a>
-            <a href="#" class="hover:text-green-600 uppercase">المنزل</a>
-            <a href="#" class="hover:text-green-600 uppercase">ألعاب الأطفال</a>
+    <nav class="bg-white border-b py-3 shadow-sm overflow-x-auto no-scrollbar">
+        <div class="container mx-auto flex gap-6 px-4 justify-start md:justify-center text-xs md:text-sm font-bold text-gray-800">
+            <a href="#" class="hover:text-green-600 transition border-b-2 border-transparent hover:border-green-600 pb-1">السوبر ماركت</a>
+            <a href="#" class="hover:text-green-600 transition border-b-2 border-transparent hover:border-green-600 pb-1">الموبايلات</a>
+            <a href="#" class="hover:text-green-600 transition border-b-2 border-transparent hover:border-green-600 pb-1">الإلكترونيات</a>
+            <a href="#" class="hover:text-green-600 transition border-b-2 border-transparent hover:border-green-600 pb-1">أدوات المنزل</a>
+            <a href="#" class="hover:text-green-600 transition border-b-2 border-transparent hover:border-green-600 pb-1">العروض اليومية</a>
         </div>
     </nav>
 
-    <section class="container mx-auto mt-4 px-4">
-        <div id="main-slider" class="bg-green-700 rounded-2xl h-64 md:h-80 flex items-center justify-between text-white px-8 md:px-16 transition-all duration-500 shadow-xl overflow-hidden relative">
+    <section class="container mx-auto mt-6 px-4">
+        <div id="hero-slider" class="bg-green-700 rounded-[2rem] h-72 md:h-96 flex items-center justify-between text-white px-6 md:px-20 transition-all duration-700 shadow-2xl relative overflow-hidden">
             
-            <div class="z-10 w-1/2">
-                <h1 id="slider-title" class="text-3xl md:text-5xl font-extrabold mb-4 slide-fade">عروض السوبر ماركت!</h1>
-                <p id="slider-desc" class="text-lg md:text-xl mb-6 text-green-100 slide-fade">وفر حتى 30% على مستلزمات البقالة اليومية لأهل أكتوبر.</p>
-                <button class="bg-black text-white px-10 py-3 rounded-full font-bold hover:bg-gray-900 transition-all shadow-lg active:scale-95">اشتري الآن</button>
+            <div class="z-20 w-full md:w-1/2 text-center md:text-right">
+                <h1 id="hero-title" class="text-3xl md:text-6xl font-black mb-4 leading-tight drop-shadow-md">...جاري التحميل</h1>
+                <p id="hero-desc" class="text-sm md:text-xl mb-8 text-green-100 opacity-90">انتظر أقوى العروض الحصرية</p>
+                <button class="bg-white text-green-700 px-10 py-4 rounded-2xl font-black hover:bg-black hover:text-white transition-all transform active:scale-95 shadow-xl">تسوق الآن <i class="fas fa-arrow-left mr-2"></i></button>
             </div>
 
-            <div class="z-10 w-1/2 flex justify-center items-center">
-                <img id="slider-product-img" src="https://z.nooncdn.com/products/tr:n-t_400/v1662645604/N53346915A_1.jpg" 
-                     alt="Product" class="h-48 md:h-64 object-contain drop-shadow-2xl slide-fade">
+            <div class="z-20 w-1/2 hidden md:flex justify-center items-center">
+                <img id="hero-img" src="" alt="منتج" class="max-h-72 object-contain img-shadow transition-all duration-500">
             </div>
 
-            <i class="fas fa-store absolute -left-10 text-[200px] text-green-600 opacity-20"></i>
-
-            <div id="slider-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"></div>
+            <div class="absolute -right-10 -bottom-10 text-[300px] text-green-600 opacity-10 rotate-12 z-10"><i class="fas fa-shopping-bag"></i></div>
+            
+            <div id="slider-dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-30"></div>
         </div>
     </section>
 
-    <section class="container mx-auto mt-10 px-4">
-        <h2 class="text-xl font-extrabold mb-6 text-black border-r-4 border-green-500 pr-3">تسوق حسب القسم</h2>
-        <div class="flex gap-4 md:gap-8 overflow-x-auto pb-6 no-scrollbar justify-start md:justify-center">
-            
+    <section class="container mx-auto mt-12 px-4 mb-10">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl font-black text-black flex items-center gap-2">
+                <span class="w-2 h-8 bg-green-600 rounded-full"></span>
+                تسوق حسب القسم
+            </h2>
+            <a href="#" class="text-green-600 font-bold hover:underline text-sm md:text-base">مشاهدة الكل</a>
+        </div>
+        
+        <div class="flex gap-4 md:gap-10 overflow-x-auto pb-6 no-scrollbar justify-start md:justify-center">
             <div class="flex flex-col items-center min-w-[100px] cursor-pointer group">
-                <div class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-md flex items-center justify-center border-2 border-transparent group-hover:border-green-500 transition-all duration-300">
-                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/supermarket-v2.png" class="w-14 h-14 md:w-16 md:h-16 object-contain">
+                <div class="w-20 h-20 md:w-28 md:h-28 bg-white rounded-3xl shadow-lg flex items-center justify-center border-4 border-transparent group-hover:border-green-500 transition-all transform group-hover:-translate-y-2">
+                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/supermarket-v2.png" 
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3081/3081840.png'" 
+                         class="w-14 h-14 md:w-20 md:h-20 object-contain">
                 </div>
-                <span class="mt-3 text-sm font-bold text-black group-hover:text-green-600">سوبر ماركت</span>
+                <span class="mt-4 text-sm font-black text-gray-800 group-hover:text-green-600">سوبر ماركت</span>
             </div>
 
             <div class="flex flex-col items-center min-w-[100px] cursor-pointer group">
-                <div class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-md flex items-center justify-center border-2 border-transparent group-hover:border-green-500 transition-all duration-300">
-                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/electronics-v2.png" class="w-14 h-14 md:w-16 md:h-16 object-contain">
+                <div class="w-20 h-20 md:w-28 md:h-28 bg-white rounded-3xl shadow-lg flex items-center justify-center border-4 border-transparent group-hover:border-green-500 transition-all transform group-hover:-translate-y-2">
+                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/electronics-v2.png" 
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3659/3659899.png'"
+                         class="w-14 h-14 md:w-20 md:h-20 object-contain">
                 </div>
-                <span class="mt-3 text-sm font-bold text-black group-hover:text-green-600">إلكترونيات</span>
+                <span class="mt-4 text-sm font-black text-gray-800 group-hover:text-green-600">إلكترونيات</span>
             </div>
 
             <div class="flex flex-col items-center min-w-[100px] cursor-pointer group">
-                <div class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-md flex items-center justify-center border-2 border-transparent group-hover:border-green-500 transition-all duration-300">
-                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/mobiles-v2.png" class="w-14 h-14 md:w-16 md:h-16 object-contain">
+                <div class="w-20 h-20 md:w-28 md:h-28 bg-white rounded-3xl shadow-lg flex items-center justify-center border-4 border-transparent group-hover:border-green-500 transition-all transform group-hover:-translate-y-2">
+                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/mobiles-v2.png" 
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/2586/2586488.png'"
+                         class="w-14 h-14 md:w-20 md:h-20 object-contain">
                 </div>
-                <span class="mt-3 text-sm font-bold text-black group-hover:text-green-600">موبايلات</span>
+                <span class="mt-4 text-sm font-black text-gray-800 group-hover:text-green-600">موبايلات</span>
             </div>
 
             <div class="flex flex-col items-center min-w-[100px] cursor-pointer group">
-                <div class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-md flex items-center justify-center border-2 border-transparent group-hover:border-green-500 transition-all duration-300">
-                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/home-v2.png" class="w-14 h-14 md:w-16 md:h-16 object-contain">
+                <div class="w-20 h-20 md:w-28 md:h-28 bg-white rounded-3xl shadow-lg flex items-center justify-center border-4 border-transparent group-hover:border-green-500 transition-all transform group-hover:-translate-y-2">
+                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/home-v2.png" 
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/1230/1230154.png'"
+                         class="w-14 h-14 md:w-20 md:h-20 object-contain">
                 </div>
-                <span class="mt-3 text-sm font-bold text-black group-hover:text-green-600">المنزل</span>
-            </div>
-
-            <div class="flex flex-col items-center min-w-[100px] cursor-pointer group">
-                <div class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-md flex items-center justify-center border-2 border-transparent group-hover:border-green-500 transition-all duration-300">
-                    <img src="https://f.nooncdn.com/s/app/com/noon/images/category-blocks-v3/beauty-v2.png" class="w-14 h-14 md:w-16 md:h-16 object-contain">
-                </div>
-                <span class="mt-3 text-sm font-bold text-black group-hover:text-green-600">الجمال</span>
+                <span class="mt-4 text-sm font-black text-gray-800 group-hover:text-green-600">المنزل</span>
             </div>
         </div>
     </section>
 
     <script>
-        const sliderItems = [
+        const slides = [
             {
-                title: "عروض السوبر ماركت!",
-                desc: "وفر حتى 30% على مستلزمات البقالة اليومية لأهل أكتوبر.",
-                img: "https://z.nooncdn.com/products/tr:n-t_400/v1662645604/N53346915A_1.jpg",
-                bgColor: "bg-green-700"
+                title: "عروض الخضروات!",
+                desc: "خضروات طازجة يومياً تصلك لباب البيت في 30 دقيقة.",
+                img: "https://z.nooncdn.com/products/tr:n-t_400/v1605814220/N41434779A_1.jpg",
+                color: "bg-green-700"
             },
             {
-                title: "أقوى خصومات الموبايلات",
-                desc: "اشتري أحدث الهواتف بخصم فوري يصل لـ 2000 جنيه.",
-                img: "https://z.nooncdn.com/products/tr:n-t_400/v1705404555/N70035133A_1.jpg",
-                bgColor: "bg-green-800"
-            },
-            {
-                title: "لوازم المنزل والمطبخ",
-                desc: "تجهيزات المطبخ بأفضل جودة وأقل سعر في السوق.",
+                title: "عالم الإلكترونيات",
+                desc: "وفر حتى 40% على جميع أجهزة المطبخ والقلايات الهوائية.",
                 img: "https://z.nooncdn.com/products/tr:n-t_400/v1640510523/N44093910A_1.jpg",
-                bgColor: "bg-green-600"
+                color: "bg-green-800"
+            },
+            {
+                title: "مستلزمات السوبر ماركت",
+                desc: "أفضل المنتجات بأقل الأسعار.. جودة نضمنها لك.",
+                img: "https://z.nooncdn.com/products/tr:n-t_400/v1662645604/N53346915A_1.jpg",
+                color: "bg-green-600"
             }
         ];
 
-        let currentIndex = 0;
-        const slider = document.getElementById('main-slider');
-        const title = document.getElementById('slider-title');
-        const desc = document.getElementById('slider-desc');
-        const productImg = document.getElementById('slider-product-img');
+        let index = 0;
+        const hTitle = document.getElementById('hero-title');
+        const hDesc = document.getElementById('hero-desc');
+        const hImg = document.getElementById('hero-img');
+        const hSlider = document.getElementById('hero-slider');
         const dotsContainer = document.getElementById('slider-dots');
 
-        function initSlider() {
-            sliderItems.forEach((_, i) => {
-                const dot = document.createElement('div');
-                dot.className = `w-2 h-2 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/40'} transition-all`;
-                dotsContainer.appendChild(dot);
-            });
-        }
+        // بناء النقط
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = `w-3 h-3 rounded-full bg-white/30 cursor-pointer transition-all duration-300`;
+            dot.onclick = () => { index = i; update(); };
+            dotsContainer.appendChild(dot);
+        });
 
-        function updateSlider() {
-            const current = sliderItems[currentIndex];
+        function update() {
+            const s = slides[index];
             
-            // إضافة الانيميشن
-            [title, desc, productImg].forEach(el => {
-                el.classList.remove('slide-fade');
-                void el.offsetWidth; // Trigger reflow
-                el.classList.add('slide-fade');
-            });
+            // إضافة الانيميشن قبل التغيير
+            [hTitle, hDesc, hImg].forEach(el => el.classList.remove('fade-slide'));
+            void hTitle.offsetWidth; // ريفلو
+            [hTitle, hDesc, hImg].forEach(el => el.classList.add('fade-slide'));
 
-            title.innerText = current.title;
-            desc.innerText = current.desc;
-            productImg.src = current.img;
-            slider.className = `${current.bgColor} rounded-2xl h-64 md:h-80 flex items-center justify-between text-white px-8 md:px-16 transition-all duration-500 shadow-xl overflow-hidden relative`;
+            hTitle.innerText = s.title;
+            hDesc.innerText = s.desc;
+            hImg.src = s.img;
+            hSlider.className = `${s.color} rounded-[2rem] h-72 md:h-96 flex items-center justify-between text-white px-6 md:px-20 transition-all duration-700 shadow-2xl relative overflow-hidden`;
 
             // تحديث النقط
-            Array.from(dotsContainer.children).forEach((dot, i) => {
-                dot.className = `w-2 h-2 rounded-full ${i === currentIndex ? 'bg-white w-4' : 'bg-white/40'} transition-all`;
+            Array.from(dotsContainer.children).forEach((d, i) => {
+                d.className = `w-3 h-3 rounded-full ${i === index ? 'bg-white w-8' : 'bg-white/30'} cursor-pointer transition-all duration-300`;
             });
 
-            currentIndex = (currentIndex + 1) % sliderItems.length;
+            index = (index + 1) % slides.length;
         }
 
-        initSlider();
-        updateSlider(); // البداية فوراً
-        setInterval(updateSlider, 2000); // تبديل كل 2 ثانية
+        update();
+        setInterval(update, 2000); // تبديل كل 2 ثانية
     </script>
 </body>
 </html>
